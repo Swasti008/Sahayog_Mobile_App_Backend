@@ -1,15 +1,14 @@
-import mongoose from 'mongoose';
+import { z } from 'zod';
 
-const OtherDetailsSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  liveLocation: { type: String, required: true },
-  posts: [
-    {
-      title: { type: String, required: true },
-      time: { type: Date, default: Date.now },
-      description: { type: String, required: true },
-    }
-  ],
-}, { timestamps: true });
 
-export default mongoose.model('OtherDetails', OtherDetailsSchema);
+const PostSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  time: z.date().optional(),
+  description: z.string().min(1, "Description is required"),
+});
+
+export const OtherDetailsSchemaValidation = z.object({
+  userId: z.string().uuid("Invalid user ID format"), 
+  liveLocation: z.string().min(1, "Live Location is required"),
+  posts: z.array(PostSchema).min(1, "At least one post is required"),
+});

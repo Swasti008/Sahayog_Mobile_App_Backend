@@ -1,11 +1,10 @@
-import mongoose from 'mongoose';
+import { z } from 'zod';
 
-const FeedSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  userName: { type: String, required: true },
-  title: { type: String, required: true },
-  description: { type: String, required: true },
-  time: { type: Date, default: Date.now },
-}, { timestamps: true });
 
-export default mongoose.model('Feed', FeedSchema);
+export const FeedSchemaValidation = z.object({
+  userId: z.string().uuid(), 
+  userName: z.string().min(1, "User name is required"),
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  time: z.date().optional(), 
+});
